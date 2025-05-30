@@ -1,0 +1,85 @@
+from flask import Flask, render_template_string, redirect, request
+import urllib.parse
+
+app = Flask(__name__)
+
+# Your WhatsApp number (replace with your real number, no + sign)
+whatsapp_number = "2348055519522"
+
+products = [
+    {"platform": "USA 🇺🇸 country Facebook has marketplace (2024)", "category": "Best Offers", "price": "₦2,500"},
+    {"platform": "USA 🇺🇸 Facebook Dating includes accounts with get started dating...", "category": "Facebook Dating", "price": "₦15,000"},
+    {"platform": "Facebook Random", "category": "Social Media", "price": "₦8,000"},
+    {"platform": "Facebook Europe", "category": "Social Media", "price": "₦10,000"},
+    {"platform": "Facebook Africa", "category": "Social Media", "price": "₦5,000"},
+    {"platform": "Facebook USA 🇺🇸", "category": "Social Media", "price": "₦15,000"},
+    {"platform": "Facebook Asia", "category": "Social Media", "price": "₦7,000"},
+    {"platform": "Instagram Europe 100 followers...", "category": "Social Media", "price": "₦3,500"},
+    {"platform": "Instagram Europe 500-800 followers...", "category": "Social Media", "price": "₦6,000"},
+    {"platform": "Instagram Europe 1000-1500 followers...", "category": "Social Media", "price": "₦7,500"},
+    {"platform": "Instagram Europe 2000 followers...", "category": "Social Media", "price": "₦10,000"},
+    {"platform": "Instagram Africa 100 followers...", "category": "Social Media", "price": "₦3,000"},
+    {"platform": "Instagram Africa 500-800 followers...", "category": "Social Media", "price": "₦5,500"},
+    {"platform": "Instagram Africa 1000-1500 followers...", "category": "Social Media", "price": "₦7,000"},
+    {"platform": "Instagram Europe 2000 followers...", "category": "Social Media", "price": "₦9,500"},
+    {"platform": "Instagram USA 🇺🇸 100 followers...", "category": "Social Media", "price": "₦5,000"},
+    {"platform": "Instagram Europe 500-800 followers...", "category": "Social Media", "price": "₦8,000"},
+    {"platform": "Instagram Europe 1000-1500 followers...", "category": "Social Media", "price": "₦10,000"},
+    {"platform": "Instagram Europe 2000 followers...", "category": "Social Media", "price": "₦12,000"},
+    {"platform": "TikTok Random 100-500 followers...", "category": "Social Media", "price": "₦3,500"},
+    {"platform": "TikTok USA 🇺🇸 500-1500 followers...", "category": "Social Media", "price": "₦7,500"},
+    {"platform": "TikTok USA 🇺🇸 2000 followers...", "category": "Social Media", "price": "₦12,000"},
+    {"platform": "TikTok USA 🇺🇸 5000 followers...", "category": "Social Media", "price": "₦15,000"},
+    {"platform": "TikTok Foreign 1000-1500 followers...", "category": "Social Media", "price": "₦7,000"},
+    {"platform": "Twitter 20-100 followers...", "category": "Social Media", "price": "₦3,500"},
+    {"platform": "Twitter USA 🇺🇸 profile real followers...", "category": "Social Media", "price": "₦5,500"},
+    {"platform": "Snapchat Male or Female...", "category": "Other Social", "price": "₦4,000"},
+    {"platform": "Discord Male or Female...", "category": "Other Social", "price": "₦3,500"},
+    {"platform": "Reddit 0-50 karma 2 years old...", "category": "Other Social", "price": "₦3,000"},
+    {"platform": "Mail.com Fastest, easiest and safest...", "category": "Mail", "price": "₦1,500"},
+    {"platform": "Gmail 1-5 years old", "category": "Mail", "price": "₦2,500"},
+    {"platform": "Outlook & Hotmail", "category": "Mail", "price": "₦1,500"},
+    {"platform": "Mail.ru Login via mail.ru app", "category": "Mail", "price": "₦1,200"},
+    {"platform": "Nord VPN 1-12 month subscription...", "category": "VPN", "price": "₦4,000"},
+    {"platform": "Private Internet Access (PIA) 1-3 months", "category": "VPN", "price": "₦4,000"},
+    {"platform": "Eset VPN best for Facebook...", "category": "VPN", "price": "₦3,500"},
+    {"platform": "Express VPN one month...", "category": "VPN", "price": "₦5,000"},
+    {"platform": "Netflix HD 1 month...", "category": "Streaming & others", "price": "₦4,000"},
+    {"platform": "iCloud storage Ecode 50GB...", "category": "Streaming & others", "price": "₦"},
+    {"platform": "Apple Music Ecode 1-3 month...", "category": "Streaming & others", "price": "₦3,500"}
+]
+
+@app.route("/")
+def index():
+    return render_template_string("""
+    <html>
+    <head><title>Simple Marketplace</title></head>
+    <body style="font-family: sans-serif;">
+        <h2>🔥 Marketplace</h2>
+        <ul>
+        {% for item in products %}
+            <li style="margin-bottom: 20px;">
+                <strong>{{ item.platform }}</strong><br>
+                Category: {{ item.category }}<br>
+                Price: {{ item.price }}<br>
+                <a href="/buy?platform={{ item.platform }}&category={{ item.category }}&price={{ item.price }}">Purchase</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </body>
+    </html>
+    """, products=products)
+
+@app.route("/buy")
+def buy():
+    platform = request.args.get("platform")
+    category = request.args.get("category")
+    price = request.args.get("price")
+
+    message = f"Hi, I'm interested in buying {platform} under {category} for {price}"
+    encoded_message = urllib.parse.quote(message)
+    whatsapp_url = f"https://wa.me/{whatsapp_number}?text={encoded_message}"
+    return redirect(whatsapp_url)
+
+if __name__ == "__main__":
+    app.run(debug=True)
